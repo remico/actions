@@ -1,0 +1,151 @@
+@startuml
+set namespaceSeparator ::
+enum QQmlEngine::ObjectOwnership {
+    + CppOwnership : 0
+    + JavaScriptOwnership : 1
+}
+
+package "Python" #56DDEE {
+    class QObject {
+        + parent() -> QObject
+        + setParent( QObject )
+        ..
+    }
+
+    class QQmlParserStatus
+    class QSurface
+    class QJSEngine
+    class QCoreApplication
+    class QGuiApplication
+
+    class QQmlEngine {
+        ..
+        + qmlContext( QObject ) -> QQmlContext
+        + qmlEngine( QObject ) -> QQmlEngine
+        ..
+        + objectOwnership() -> ObjectOwnership
+        + setObjectOwnership()
+    }
+
+    class QQmlApplicationEngine {
+        + rootObjects() -> QList<QObjects>
+        ..
+        + setInitialProperties()
+        + load()
+        + loadData()
+    }
+
+    class QQmlContext {
+        + engine() -> QQmlEngine
+        + parentContext() -> QQmlContext
+        ..
+        + contextObject() -> QObject
+        + setContextObject()
+        ..
+        + contextProperty() -> QVariant
+        + setContextProperties( QVector )
+        + setContextProperty()
+    }
+
+    class QQmlComponent {
+        + engine() -> QQmlEngine
+        + creationContext() -> QQmlContext
+        ..
+        + create() -> QObject
+        + create( QQmlIncubator )
+        ..
+        + beginCreate() -> QObject
+        + setInitialProperties()
+        + completeCreate()
+        ..
+        + createWithInitialProperties() -> QObject
+    }
+
+    class QQuickItem {
+        + parentItem() -> QQuickItem
+        + setParentItem()
+    }
+
+    class QWindow {
+        + parent() -> QWindow
+        + setParent()
+        ..
+        + {static} fromWinId(WId) -> QWindow
+    }
+    note top of QWindow: A window without a parent \nis known as a top level window
+
+    class QQuickWindow {
+        + contentItem() -> QQuickItem
+        + setParent( QQuickWindow.contentItem() )
+        + setTransientParent( QQuickWindow )
+    }
+
+    class QQuickView {
+        + setInitialProperties()
+        + setSource()
+    }
+}
+
+package "QML" #00BB00 {
+    class Window << (T, #FFCC00) >>
+
+    class Item << (T, #FFCC00) >> {
+        + parent [visual]
+    }
+
+    class Component << (T, #FFCC00) >>
+}
+
+QObject <|--QCoreApplication
+QCoreApplication <|-- QGuiApplication
+
+QObject <|-- QJSEngine
+QJSEngine <|-- QQmlEngine
+QQmlEngine <|-- QQmlApplicationEngine
+
+QObject <|-- QWindow
+QSurface <|-- QWindow
+QWindow <|-- QQuickWindow
+QQuickWindow <|-- QQuickView
+Window ..[#Blue]> QQuickWindow
+QQuickWindow *-- "1" QQuickItem : contentItem
+
+QObject <|-- QQmlContext
+QObject <|-- QQmlComponent
+
+Component ..[#Blue]> QQmlComponent
+
+QQmlComponent ..> "0..*" QQuickItem : create
+QQmlComponent ..> "0..*" QQuickWindow : create
+
+QObject <|-- QQuickItem
+QQmlParserStatus <|-- QQuickItem
+Item .[#Blue]..> QQuickItem
+
+
+
+
+
+
+' note right of QQmlEngine::ObjectOwnership: The object is owned by C++ code and QML will \
+    never delete it. The JavaScript destroy() method cannot be used on these objects. \
+    This option is similar to QScriptEngine::QtOwnership.
+' note left of QQmlEngine::ObjectOwnership: The object is owned by JavaScript. \
+    When the object is returned to QML as the return value of a method call, QML will \
+    track it and delete it if there are no remaining JavaScript references to it and \
+    it has no QObject::parent(). An object tracked by one QQmlEngine will be deleted during \
+    that QQmlEngine's destructor. Thus, JavaScript references between objects with \
+    JavaScriptOwnership from two different engines will not be valid if one of these \
+    engines is deleted. This option is similar to QScriptEngine::ScriptOwnership.
+' note bottom of QQmlEngine::ObjectOwnership: Generally an application doesn't need to set \
+    an object's ownership explicitly. QML uses a heuristic to set the default ownership. \
+    By default, an object that is created by QML has JavaScriptOwnership. The exception \
+    to this are the root objects created by calling QQmlComponent::create() or \
+    QQmlComponent::beginCreate(), which have CppOwnership by default. The ownership of \
+    these root-level objects is considered to have been transferred to the C++ caller. \
+    Objects not-created by QML have CppOwnership by default. The exception to this are objects \
+    returned from C++ method calls; their ownership will be set to JavaScriptOwnership. \
+    This applies only to explicit invocations of Q_INVOKABLE methods or slots, but not to \
+    property getter invocations. \
+    Calling setObjectOwnership() overrides the default ownership heuristic used by QML.
+@enduml

@@ -1,0 +1,6 @@
+{
+    "files": [
+        "src/github_actions/main.py",
+        "src/github_actions/ui/applicationwindow.qml"
+    ]
+}
