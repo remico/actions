@@ -25,7 +25,7 @@ def localdata(f):
 def json2xml(f):
     @wraps(f)
     def w(*a, **kw):
-        text = f(*a, **kw)
+        text = f(*a, **kw) or "{}"  # prevent json2xml crashing on empty input
         return Json2xml(readfromstring(text)).to_xml()
     return w
 
@@ -106,5 +106,5 @@ class WorkflowRuns(QObject):
     def setUpdating(self, val):
         if val:
             self.xmlAboutToUpdate.emit()
-        self.m_updating = val
+        self.m_updating = bool(val)
         self.updatingChanged.emit()
