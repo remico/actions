@@ -10,16 +10,15 @@ from json2xml.utils import readfromstring
 
 from .pyside2 import *
 
-TEMP_FILE = Path(gettempdir(), "workflow_runs.xml")
-
 
 def localdata(f):
     @wraps(f)
     def w(*a, **kw):
-        if not TEMP_FILE.exists():
+        tempfile = Path(gettempdir(), "workflow_runs.xml")
+        if not tempfile.exists():
             r = f(*a, **kw)
-            TEMP_FILE.write_text(r)
-        return TEMP_FILE.read_text()
+            tempfile.write_text(r)
+        return tempfile.read_text()
     return w
 
 
@@ -69,16 +68,16 @@ class WorkflowRunsModel(QObject):
         if items:
             self.updating = True
             for run in items:
-                r = self.call_api("DELETE", WorkflowRunsModel.api_delete.format(run_id=run))
-                print("response:", r or "OK")
+                self.call_api("DELETE", WorkflowRunsModel.api_delete.format(run_id=run))
             QTimer.singleShot(2000, self.update_runs)
 
-    @PS2Slot()
+    @PS2Slot(str, str)
     def post_workflow_dispatch(self, ref, w_id):
+        self.updating = True
+        api_url = WorkflowRunsModel.api_new_run.format(workflow_id=w_id)
         payload = {'ref': ref}
-        r = self.call_api("POST", WorkflowRunsModel.api_new_run.format(workflow_id=w_id), params=payload)
-        print("response:", r or "OK")
-        QTimer.singleShot(2000, self.update_runs)
+        self.call_api("POST", api_url, json=payload)
+        QTimer.singleShot(4000, self.update_runs)
 
     # properties
     # =====

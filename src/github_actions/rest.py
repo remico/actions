@@ -28,20 +28,28 @@ class Rest(QObject):
         self.m_workflowruns = WorkflowRunsModel(self)
 
     def do_request(self, action: str, url: str, **kw):
-        print(f"API * {action.upper()}:", url)
         try:
             url = Rest.api_url + f"/{self.repo}/{url}"
+            print(f"* API: {action.upper()} @ {url}")
+
             if 'auth' not in kw:
                 kw['auth'] = Rest.auth
 
-            if action.lower() == 'delete':
-                r = self.s.delete(url, **kw).text
-            if action.lower() == 'post':
-                r = self.s.post(url, **kw).text
-            else:  # GET by default
-                r = self.s.get(url, **kw).text
+            if headers := kw.get('headers', {}):
+                headers['Accept'] = "application/vnd.github.v3+json"
 
-            return r
+            if action.lower() == 'delete':
+                r = self.s.delete(url, **kw)
+            if action.lower() == 'post':
+                print(f"* payload json: {kw.get('json')}")
+                r = self.s.post(url, **kw)
+            else:  # GET by default
+                r = self.s.get(url, **kw)
+
+            if r.text:
+                print("<=", r)
+
+            return r.text
         except requests.exceptions.RequestException as e:
             print("ERROR: ", e)
             sys.exit(1)

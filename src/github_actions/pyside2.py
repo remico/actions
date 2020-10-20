@@ -25,4 +25,4 @@ from PySide2.QtQuick import QQuickView
 from PySide2.QtQuick import QQuickWindow
 
 
-print(f">>>>>>>> Importing 'pyside2' module [{__name__}]")
+print(f"@@ Importing 'pyside2' module [{__name__}]")

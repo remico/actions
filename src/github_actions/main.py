@@ -16,6 +16,8 @@ def main():
     app.setWindowIcon(QIcon(app_icon))
 
     engine = QQmlApplicationEngine()
+    engine.rootContext().setContextProperty("APP_CONFIG", path("config.ini").str())
+
     uifactory = UiFactory(engine)
 
     rest = Rest("spawned")

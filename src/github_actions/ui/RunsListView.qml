@@ -10,6 +10,12 @@ Item {
     property string name: "workflow runs"
     property var toDelete: []
 
+    Settings {
+        id: settings
+        category: root.name
+        property string workflow_id: "python-publish.yml"
+    }
+
     ListView {
         id: _view
 
@@ -64,6 +70,14 @@ Item {
             text: qsTr("Delete Selected")
             onClicked: {
                 WorkflowRuns.delete_runs(root.toDelete)
+                root.toDelete = []
+            }
+        }
+        Button {
+            width: 140
+            text: qsTr("Start Run")
+            onClicked: {
+                WorkflowRuns.post_workflow_dispatch("develop", settings.workflow_id)
                 root.toDelete = []
             }
         }
