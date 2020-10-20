@@ -30,7 +30,7 @@ def json2xml(f):
     return w
 
 
-class WorkflowRunsModel(QObject):
+class WorkflowRuns(QObject):
     api_delete = "actions/runs/{run_id}"  # DELETE run
     api_list = "actions/runs"  # GET list
     api_new_run = "actions/workflows/{workflow_id}/dispatches"  # POST
@@ -48,7 +48,7 @@ class WorkflowRunsModel(QObject):
     @json2xml
     # @localdata
     def _get_runs(self):
-        return self.call_api("GET", WorkflowRunsModel.api_list)
+        return self.call_api("GET", WorkflowRuns.api_list)
 
     # signals
     request_action = PS2Signal(str, str)
@@ -68,13 +68,13 @@ class WorkflowRunsModel(QObject):
         if items:
             self.updating = True
             for run in items:
-                self.call_api("DELETE", WorkflowRunsModel.api_delete.format(run_id=run))
+                self.call_api("DELETE", WorkflowRuns.api_delete.format(run_id=run))
             QTimer.singleShot(2000, self.update_runs)
 
     @PS2Slot(str, str)
     def post_workflow_dispatch(self, ref, w_id):
         self.updating = True
-        api_url = WorkflowRunsModel.api_new_run.format(workflow_id=w_id)
+        api_url = WorkflowRuns.api_new_run.format(workflow_id=w_id)
         payload = {'ref': ref}
         self.call_api("POST", api_url, json=payload)
         QTimer.singleShot(4000, self.update_runs)

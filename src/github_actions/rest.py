@@ -2,14 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import sys
-
 from os import getenv
 
 import requests
 from requests.auth import HTTPBasicAuth
 
 from .pyside2 import *
-from .workflowrun import WorkflowRunsModel
+from .workflowrun import WorkflowRuns
+
+
+def uiobject(pType=QObject):
+    def w(f):
+        prop = PS2Property(pType, constant=True)
+        return prop(f)
+    return w
 
 
 class Rest(QObject):
@@ -25,7 +31,7 @@ class Rest(QObject):
         self.repo = repo
         self.s = requests.Session()
 
-        self.m_workflowruns = WorkflowRunsModel(self)
+        self.m_workflowruns = WorkflowRuns(self)
 
     def do_request(self, action: str, url: str, **kw):
         try:
@@ -55,8 +61,8 @@ class Rest(QObject):
             sys.exit(1)
 
     # properties
-    @PS2Property(WorkflowRunsModel, constant=True)
-    def WorkflowRuns(self):
+    @uiobject(WorkflowRuns)
+    def UiWorkflowRuns(self):
         return self.m_workflowruns
 
     @PS2Property(str, constant=True)

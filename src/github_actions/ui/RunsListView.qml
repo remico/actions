@@ -36,7 +36,7 @@ Item {
 
         BusyIndicator {
             anchors.centerIn: parent
-            running: WorkflowRuns.updating
+            running: UiWorkflowRuns.updating
         }
     }
 
@@ -52,8 +52,8 @@ Item {
             width: 140
             text: qsTr("Get Runs")
             onClicked: {
-                WorkflowRuns.clear_runs()
-                WorkflowRuns.update_runs()
+                UiWorkflowRuns.clear_runs()
+                UiWorkflowRuns.update_runs()
                 root.toDelete = []
             }
         }
@@ -61,7 +61,7 @@ Item {
             width: 140
             text: qsTr("Clear View")
             onClicked: {
-                WorkflowRuns.clear_runs()
+                UiWorkflowRuns.clear_runs()
                 root.toDelete = []
             }
         }
@@ -69,7 +69,7 @@ Item {
             width: 140
             text: qsTr("Delete Selected")
             onClicked: {
-                WorkflowRuns.delete_runs(root.toDelete)
+                UiWorkflowRuns.delete_runs(root.toDelete)
                 root.toDelete = []
             }
         }
@@ -77,7 +77,7 @@ Item {
             width: 140
             text: qsTr("Start Run")
             onClicked: {
-                WorkflowRuns.post_workflow_dispatch("develop", settings.workflow_id)
+                UiWorkflowRuns.post_workflow_dispatch("develop", settings.workflow_id)
                 root.toDelete = []
             }
         }
@@ -132,7 +132,7 @@ Item {
 
     XmlListModel {
         id: _m
-        xml: WorkflowRuns.xml
+        xml: UiWorkflowRuns.xml
         query: "/all/workflow_runs/item"
         XmlRole { name: 'id'; query: 'id/string()' }
         XmlRole { name: 'created_at'; query: 'created_at/string()' }
