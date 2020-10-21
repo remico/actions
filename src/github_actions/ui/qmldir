@@ -1,0 +1,13 @@
+module remico.ui
+
+ApplicationWindow 1.0 ApplicationWindow.qml
+Button2 1.0 Button2.qml
+ButtonColumn 1.0 ButtonColumn.qml
+RunsListView 1.0 RunsListView.qml
+Settings 1.0 Settings.qml
+WorkflowRunsDelegate 1.0 WorkflowRunsDelegate.qml
+Utils 1.0 utils.js
+
+# debug
+TestDialog 0.1 draft/TestDialog.qml
+TestWindow 0.1 draft/TestWindow.qml

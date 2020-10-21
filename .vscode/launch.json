@@ -9,7 +9,11 @@
             "type": "python",
             "request": "launch",
             "module": "github_actions",
-            "cwd": "${workspaceFolder}/src"
+            "cwd": "${workspaceFolder}/src",
+            "env": {
+                // "QML_IMPORT_TRACE": "1",
+                // "QML2_IMPORT_PATH": "${workspaceFolder}/src/github_actions",
+            }
         }
     ]
 }

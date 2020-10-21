@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.XmlListModel 2.15
-import "utils.js" as Utils
+import ui 1.0
 
 Item {
     id: root
@@ -25,7 +25,7 @@ Item {
         anchors.right: _buttons.left
 
         KeyNavigation.right: _buttons
-        focus: true
+        focus: count > 0
 
         highlight: Rectangle {
             color: _view.activeFocus ? "darkgray" : "lightgray"
@@ -55,16 +55,17 @@ Item {
         }
     }
 
-    Column {
+    ButtonColumn {
         id: _buttons
 
         anchors.right: parent.right
-        spacing: 5
+
+        width: 130
+        height: parent.height
 
         KeyNavigation.left: _view
 
-        Button {
-            width: 140
+        Button2 {
             text: qsTr("Get Runs")
             onClicked: {
                 UiWorkflowRuns.clear_runs()
@@ -72,24 +73,21 @@ Item {
                 root.toDelete = []
             }
         }
-        Button {
-            width: 140
+        Button2 {
             text: qsTr("Clear View")
             onClicked: {
                 UiWorkflowRuns.clear_runs()
                 root.toDelete = []
             }
         }
-        Button {
-            width: 140
+        Button2 {
             text: qsTr("Delete Selected")
             onClicked: {
                 UiWorkflowRuns.delete_runs(root.toDelete)
                 root.toDelete = []
             }
         }
-        Button {
-            width: 140
+        Button2 {
             text: qsTr("Start Run")
             onClicked: {
                 UiWorkflowRuns.post_workflow_dispatch("develop", settings.workflow_id)

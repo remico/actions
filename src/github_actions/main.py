@@ -25,6 +25,8 @@ def main():
     rest = Rest(repo_name, repo_owner)
     uifactory = UiFactory(engine)
 
+    engine.addImportPath(path().str())  # NOTE: imports from the package root so far
+
     engine.rootContext().setContextObject(rest)
     engine.rootContext().setContextProperty("APP_CONFIG", settings_file)
 
