@@ -9,6 +9,7 @@ from PySide2.QtCore import QObject
 from PySide2.QtCore import QUrl
 from PySide2.QtCore import Qt
 from PySide2.QtCore import QTimer
+from PySide2.QtCore import QSettings
 
 from PySide2.QtGui import QIcon
 from PySide2.QtGui import QGuiApplication

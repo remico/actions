@@ -15,13 +15,18 @@ def main():
     app_icon = path("assets/icon.svg").str()
     app.setWindowIcon(QIcon(app_icon))
 
-    engine = QQmlApplicationEngine()
-    engine.rootContext().setContextProperty("APP_CONFIG", path("config.ini").str())
+    settings_file = path("config.ini").str()
 
+    settings = QSettings(settings_file, QSettings.IniFormat)
+    (repo_owner := settings.value("owner")) or settings.setValue("owner", "")
+    (repo_name := settings.value("repo")) or settings.setValue("repo", "")
+
+    engine = QQmlApplicationEngine()
+    rest = Rest(repo_name, repo_owner)
     uifactory = UiFactory(engine)
 
-    rest = Rest("spawned")
     engine.rootContext().setContextObject(rest)
+    engine.rootContext().setContextProperty("APP_CONFIG", settings_file)
 
     main_ui = uifactory.make_window(path("ui/ApplicationWindow.qml").str())
 

@@ -19,27 +19,21 @@ def uiobject(pType=QObject):
 
 
 class Rest(QObject):
-    # static attributes
-    owner = "remico"
-    token = getenv('GITHUB_TOKEN')
-    auth = HTTPBasicAuth(owner, token)
-    api_url = f"https://api.github.com/repos/{owner}"
-
-    # methods
-    def __init__(self, repo, parent=None):
+    def __init__(self, repo, owner, parent=None):
         super().__init__(parent)
         self.repo = repo
+        self.owner = owner
         self.s = requests.Session()
 
         self.m_workflowruns = WorkflowRuns(self)
 
-    def do_request(self, action: str, url: str, **kw):
+    def do_request(self, action: str, api_url: str, **kw):
         try:
-            url = Rest.api_url + f"/{self.repo}/{url}"
+            url = f"https://api.github.com/repos/{self.owner}/{self.repo}/{api_url}"
             print(f"* API: {action.upper()} @ {url}")
 
             if 'auth' not in kw:
-                kw['auth'] = Rest.auth
+                kw['auth'] = HTTPBasicAuth(self.owner, getenv('GITHUB_TOKEN'))
 
             if headers := kw.get('headers', {}):
                 headers['Accept'] = "application/vnd.github.v3+json"
