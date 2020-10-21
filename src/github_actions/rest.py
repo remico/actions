@@ -40,7 +40,7 @@ class Rest(QObject):
 
             if action.lower() == 'delete':
                 r = self.s.delete(url, **kw)
-            if action.lower() == 'post':
+            elif action.lower() == 'post':
                 print(f"* payload json: {kw.get('json')}")
                 r = self.s.post(url, **kw)
             else:  # GET by default
