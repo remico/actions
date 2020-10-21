@@ -85,9 +85,13 @@ Item {
 
     Component {
         id: _d
-        Item {
+        FocusScope {
             id: _d_item
-            width: _view.contentItem.width
+
+            readonly property var list: ListView
+            readonly property var view: ListView.view
+
+            width: view.contentItem.width
             height: 42
 
             KeyNavigation.right: _buttons
@@ -113,10 +117,18 @@ Item {
                 leftPadding: 5
                 Text {
                     text: Utils.format_timestamp(created_at)
-                    color: _d_item.ListView.isCurrentItem ? "black" : "red"
+                    color: list.isCurrentItem ? "black" : "red"
                 }
                 Text {
                     text: "[ " + event + " @ " + head_branch + " ]"
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    _d_item.focus = true
+                    view.currentIndex = index
                 }
             }
 
@@ -124,7 +136,7 @@ Item {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 focusPolicy: Qt.NoFocus
-                focus: _d_item.ListView.isCurrentItem
+                focus: true
                 onCheckedChanged: Utils.a_insert2(root.toDelete, model.id, checked)
             }
         }
