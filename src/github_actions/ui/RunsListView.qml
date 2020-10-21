@@ -24,7 +24,9 @@ Item {
         anchors.left: parent.left
         anchors.right: _buttons.left
 
+        KeyNavigation.right: _buttons
         focus: true
+
         highlight: Rectangle {
             color: _view.activeFocus ? "darkgray" : "lightgray"
             width: 1
@@ -32,7 +34,6 @@ Item {
         }
 
         delegate: WorkflowRunsDelegate {
-            KeyNavigation.right: _buttons
             onChecked: Utils.a_insert2(root.toDelete, model.id, checked)
         }
 
