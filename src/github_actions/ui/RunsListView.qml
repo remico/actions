@@ -31,8 +31,22 @@ Item {
             anchors.horizontalCenter: _view.contentItem.horizontalCenter
         }
 
-        delegate: _d
-        model: _m
+        delegate: WorkflowRunsDelegate {
+            KeyNavigation.right: _buttons
+            onChecked: Utils.a_insert2(root.toDelete, model.id, checked)
+        }
+
+        model: XmlListModel {
+            xml: UiWorkflowRuns.xml
+            query: "/all/workflow_runs/item"
+            XmlRole { name: 'id'; query: 'id/string()' }
+            XmlRole { name: 'created_at'; query: 'created_at/string()' }
+            XmlRole { name: 'conclusion'; query: 'conclusion/string()' }
+            XmlRole { name: 'event'; query: 'event/string()' }
+            XmlRole { name: 'head_branch'; query: 'head_branch/string()' }
+            XmlRole { name: 'status'; query: 'status/string()' }
+            XmlRole { name: 'html_url'; query: 'html_url/string()' }
+        }
 
         BusyIndicator {
             anchors.centerIn: parent
@@ -81,77 +95,5 @@ Item {
                 root.toDelete = []
             }
         }
-    }
-
-    Component {
-        id: _d
-        FocusScope {
-            id: _d_item
-
-            readonly property var list: ListView
-            readonly property var view: ListView.view
-
-            width: view.contentItem.width
-            height: 42
-
-            KeyNavigation.right: _buttons
-
-            // required property string created_at
-            // required property string conclusion
-
-            Rectangle {
-                id: _led
-                height: 0.8 * parent.height
-                width: height
-                radius: 8
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: 5
-                color: conclusion == "success" ? "lightgreen" : "pink"
-            }
-
-            Column {
-                id: _text
-                anchors.left: _led.right
-                anchors.verticalCenter: parent.verticalCenter
-                leftPadding: 5
-                Text {
-                    text: Utils.format_timestamp(created_at)
-                    color: list.isCurrentItem ? "black" : "red"
-                }
-                Text {
-                    text: "[ " + event + " @ " + head_branch + " ]"
-                }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    _d_item.focus = true
-                    view.currentIndex = index
-                }
-            }
-
-            CheckBox {
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                focusPolicy: Qt.NoFocus
-                focus: true
-                onCheckedChanged: Utils.a_insert2(root.toDelete, model.id, checked)
-            }
-        }
-    }
-
-    XmlListModel {
-        id: _m
-        xml: UiWorkflowRuns.xml
-        query: "/all/workflow_runs/item"
-        XmlRole { name: 'id'; query: 'id/string()' }
-        XmlRole { name: 'created_at'; query: 'created_at/string()' }
-        XmlRole { name: 'conclusion'; query: 'conclusion/string()' }
-        XmlRole { name: 'event'; query: 'event/string()' }
-        XmlRole { name: 'head_branch'; query: 'head_branch/string()' }
-        XmlRole { name: 'status'; query: 'status/string()' }
-        XmlRole { name: 'html_url'; query: 'html_url/string()' }
     }
 }
