@@ -6,19 +6,10 @@ from pathlib import Path
 __all__ = ['path']
 
 
-class path:
-    def __init__(self, *other):
-        self.package_root = Path(__package__).absolute()
-        self.initial_path = self.package_root.joinpath(*other)
-
-    def __repr__(self):
-        return str(self.initial_path)
+class path(str):
+    def __new__(cls, *other):
+        root = Path(__package__).absolute()
+        return str.__new__(cls, root.joinpath(*other))
 
     def join(self, *other):
-        return self.initial_path.joinpath(*other)
-
-    def joins(self, *other):
-        return str(self.join(*other))
-
-    def str(self):
-        return self.__repr__()
+        return path(Path(self).joinpath(self, *other))
