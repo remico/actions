@@ -4,12 +4,12 @@
 from functools import wraps
 from pathlib import Path
 from tempfile import gettempdir
-from threading import Thread
 
 from json2xml.json2xml import Json2xml
 from json2xml.utils import readfromstring
 
 from .pyside2 import *
+from .worker import WorkerThread
 
 
 def localdata(f):
@@ -70,12 +70,11 @@ class WorkflowRuns(QObject):
         if items:
             self.updating = True
 
-            def _call_in_thread():
+            def _job():
                 for run in items:
                     self.call_api("DELETE", WorkflowRuns.api_delete.format(run_id=run))
-                QMetaObject.invokeMethod(self, 'update_runs')  # QueuedConnection
 
-            Thread(target=_call_in_thread).start()
+            WorkerThread(_job, self).callback(self.update_runs, 1000)
 
     @PS2Slot(str, str)
     def post_workflow_dispatch(self, ref, w_id):
