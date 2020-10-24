@@ -4,6 +4,7 @@
 from functools import wraps
 from pathlib import Path
 from tempfile import gettempdir
+from threading import Thread
 
 from json2xml.json2xml import Json2xml
 from json2xml.utils import readfromstring
@@ -65,11 +66,16 @@ class WorkflowRuns(QObject):
 
     @PS2Slot(list)
     def delete_runs(self, items):
+        # run in a different thread just to avoid blocking gui
         if items:
             self.updating = True
-            for run in items:
-                self.call_api("DELETE", WorkflowRuns.api_delete.format(run_id=run))
-            QTimer.singleShot(2000, self.update_runs)
+
+            def _call_in_thread():
+                for run in items:
+                    self.call_api("DELETE", WorkflowRuns.api_delete.format(run_id=run))
+                QMetaObject.invokeMethod(self, 'update_runs')  # QueuedConnection
+
+            Thread(target=_call_in_thread).start()
 
     @PS2Slot(str, str)
     def post_workflow_dispatch(self, ref, w_id):

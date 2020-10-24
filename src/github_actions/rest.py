@@ -24,6 +24,7 @@ class Rest(QObject):
         self.repo = repo
         self.owner = owner
         self.s = requests.Session()
+        self.auth = HTTPBasicAuth(owner, getenv('GITHUB_TOKEN'))
 
         self.m_workflowruns = WorkflowRuns(self)
 
@@ -33,7 +34,7 @@ class Rest(QObject):
             print(f"* API: {action.upper()} @ {url}")
 
             if 'auth' not in kw:
-                kw['auth'] = HTTPBasicAuth(self.owner, getenv('GITHUB_TOKEN'))
+                kw['auth'] = self.auth
 
             if headers := kw.get('headers', {}):
                 headers['Accept'] = "application/vnd.github.v3+json"
