@@ -32,10 +32,10 @@ def main():
 
     main_ui = uifactory.make_window(path("ui/ApplicationWindow.qml"))
 
-    # test_ui = uifactory.make_window(path("ui/TestWindow.qml"), main_ui)
+    # test_ui = uifactory.make_window(path("ui/draft/TestWindow.qml"), main_ui)
     # test_ui.show()  # window
 
-    # test_ui2 = uifactory.make_popup(path("ui/TestDialog.qml"), main_ui)
+    # test_ui2 = uifactory.make_popup(path("ui/draft/TestDialog.qml"), main_ui)
     # test_ui2.open()  # popup, dialog
 
     # container = uifactory.child(main_ui, "container_runsview", QQuickItem)

@@ -29,7 +29,7 @@ class UiFactory:
     def oContext(self, o):
         if UiFactory._isWindow(o):
             o = o.contentItem()
-        return self.engine.contextForObject(o)
+        return self.engine.contextForObject(o) or self.engine.rootContext()
 
     def make_popup(self, url, parent, initialProperties={}, ownership=QQmlEngine.JavaScriptOwnership):
         context = self.oContext(parent)
@@ -62,8 +62,7 @@ class UiFactory:
     #     return view
 
     def make_window(self, url, parent_wnd:QQuickWindow=None, initialProperties={}):
-        parent_item = parent_wnd.contentItem() if parent_wnd else None
-        context = QQmlContext(self.oContext(parent_item)) if parent_item else self.engine.rootContext()
+        context = QQmlContext(self.oContext(parent_wnd))
         component = QQmlComponent(self.engine, url)
         window = component.createWithInitialProperties(initialProperties, context)
 
@@ -72,7 +71,7 @@ class UiFactory:
 
         # for top-level window (no parent), pass an object to prevent python GC to kill the window
         # for child window, pass a window to show this window inside the parent window
-        window.setParent(parent_item if parent_item else self.engine)  # memory management
+        window.setParent(parent_wnd.contentItem() if parent_wnd else self.engine)  # memory management
         window.setTransientParent(parent_wnd)  # windows hierarchy
 
         # # extra flags
