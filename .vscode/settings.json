@@ -9,5 +9,6 @@
         "155",
         "155",
         "0.06"
-    ]
+    ],
+    "python.pythonPath": "/usr/bin/python3.8"
 }

@@ -34,19 +34,19 @@ Item {
         }
 
         delegate: WorkflowRunsDelegate {
-            onChecked: Utils.a_insert2(root.toDelete, model.id, checked)
+            onChecked: Utils.a_insert2(root.toDelete, run_id, checked)
         }
 
         model: XmlListModel {
             xml: UiWorkflowRuns.xml
             query: "/all/workflow_runs/item"
-            XmlRole { name: 'id'; query: 'id/string()' }
+            XmlRole { name: 'run_id'; query: 'id/string()' }
             XmlRole { name: 'created_at'; query: 'created_at/string()' }
             XmlRole { name: 'conclusion'; query: 'conclusion/string()' }
             XmlRole { name: 'event'; query: 'event/string()' }
             XmlRole { name: 'head_branch'; query: 'head_branch/string()' }
             XmlRole { name: 'status'; query: 'status/string()' }
-            XmlRole { name: 'html_url'; query: 'html_url/string()' }
+            XmlRole { name: 'weblink'; query: 'html_url/string()' }
         }
 
         BusyIndicator {

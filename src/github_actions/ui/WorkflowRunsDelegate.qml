@@ -10,11 +10,16 @@ FocusScope {
 
     signal checked(bool checked)
 
-    width: view.contentItem.width
+    width: view.width
     height: 42
 
-    // required property string created_at
-    // required property string conclusion
+    required property string run_id
+    required property string created_at
+    required property string conclusion
+    required property string event
+    required property string head_branch
+    required property string status
+    required property string weblink
 
     Rectangle {
         id: _led
@@ -25,6 +30,14 @@ FocusScope {
         anchors.left: parent.left
         anchors.leftMargin: 5
         color: conclusion == "success" ? "lightgreen" : "pink"
+        MouseArea {
+            id: _ledButton
+            anchors.fill: parent
+            hoverEnabled: true
+            ToolTip.visible: containsMouse
+            ToolTip.text: weblink
+            onClicked: Qt.openUrlExternally(weblink)
+        }
     }
 
     Column {
@@ -43,9 +56,12 @@ FocusScope {
 
     MouseArea {
         anchors.fill: parent
+        propagateComposedEvents: true
         onClicked: {
+            mouse.accepted = false
             root.focus = true
-            view.currentIndex = index
+            var mapped = mapToItem(view, mouse.x, mouse.y)
+            view.currentIndex = view.indexAt(mapped.x, mapped.y)
         }
     }
 
