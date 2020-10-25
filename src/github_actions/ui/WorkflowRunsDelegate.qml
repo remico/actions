@@ -59,9 +59,9 @@ FocusScope {
         propagateComposedEvents: true
         onClicked: {
             mouse.accepted = false
-            root.focus = true
             var mapped = mapToItem(view, mouse.x, mouse.y)
             view.currentIndex = view.indexAt(mapped.x, mapped.y)
+            root.forceActiveFocus()
         }
     }
 
