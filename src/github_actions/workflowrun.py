@@ -15,7 +15,7 @@ from .worker import WorkerThread
 def localdata(f):
     @wraps(f)
     def w(*a, **kw):
-        tempfile = Path(gettempdir(), "workflow_runs.xml")
+        tempfile = Path(gettempdir(), "workflow_runs.json")
         if not tempfile.exists():
             r = f(*a, **kw)
             tempfile.write_text(r)
