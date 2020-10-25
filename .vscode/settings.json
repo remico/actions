@@ -1,14 +1,5 @@
 {
     "python.languageServer": "Pylance",
     "python.linting.pylintEnabled": true,
-    "workbench.colorCustomizations": {
-        // "editor.background": "#dfdfdf"
-    },
-    "blockhighlight.background": [
-        "90",
-        "155",
-        "155",
-        "0.06"
-    ],
     "python.pythonPath": "/usr/bin/python3.8"
 }

@@ -9,7 +9,6 @@ class UiFactory:
 
     def __init__(self, engine):
         self.engine =  engine
-
     @staticmethod
     def _isWindow(o):
         return isinstance(o, QQuickWindow)
@@ -31,26 +30,23 @@ class UiFactory:
             o = o.contentItem()
         return self.engine.contextForObject(o) or self.engine.rootContext()
 
-    def make_popup(self, url, parent, initialProperties={}, ownership=QQmlEngine.JavaScriptOwnership):
+    def _create_item(self, url, parent, initialProperties={}, ownership=QQmlEngine.JavaScriptOwnership):
         context = self.oContext(parent)
         component = QQmlComponent(self.engine, url)
-
-        # make dialog visible
-        if 'parent' not in initialProperties:
-            initialProperties['parent'] = parent.contentItem()
-
         item = component.createWithInitialProperties(initialProperties, context)
-        item.setParent(parent)  # memory management: if parent => QML ignores JavaScriptOwnership
+        parent_item = parent.contentItem() if self._isWindow(parent) else parent
+        item.setParent(parent_item)  # memory management; also, if parent => QML ignores JavaScriptOwnership
         self.engine.setObjectOwnership(item, ownership)
         return item
 
     def make_item(self, url, parent, initialProperties={}, ownership=QQmlEngine.JavaScriptOwnership):
-        context = self.oContext(parent)
-        component = QQmlComponent(self.engine, url)
-        item = component.createWithInitialProperties(initialProperties, context)
-        item.setParent(parent)  # memory management: if parent => QML ignores JavaScriptOwnership
-        item.setParentItem(parent)  # make item visible
-        self.engine.setObjectOwnership(item, ownership)
+        item = self._create_item(url, parent, initialProperties, ownership)
+        item.setParentItem(parent)  # make the item visible (parent-child hierarchy)
+        return item
+
+    def make_popup(self, url, parent_wnd:QQuickWindow, initialProperties={}, ownership=QQmlEngine.JavaScriptOwnership):
+        item = self._create_item(url, parent_wnd, initialProperties, ownership)
+        item.setProperty("parent", parent_wnd.contentItem())  # make the popup visible (window hierarchy)
         return item
 
     # @staticmethod

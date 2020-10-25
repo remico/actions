@@ -29,7 +29,7 @@ FocusScope {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 5
-        color: conclusion == "success" ? "lightgreen" : "pink"
+        color: status == "completed" ? (conclusion == "success" ? "lightgreen" : "pink") : "gold"
         MouseArea {
             id: _ledButton
             anchors.fill: parent
