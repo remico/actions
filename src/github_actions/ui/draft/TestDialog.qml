@@ -9,7 +9,12 @@ Dialog {
     y: 150
 
     title: "Title test dialog"
+
     modal: true
+    closePolicy: Popup.CloseOnEscape
+
+    focus: true
+    Component.onCompleted: standardButton(Dialog.Cancel).forceActiveFocus()
 
     standardButtons: Dialog.Ok | Dialog.Cancel
 
