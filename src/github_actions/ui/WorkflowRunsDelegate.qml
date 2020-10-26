@@ -45,9 +45,15 @@ FocusScope {
         anchors.left: _led.right
         anchors.verticalCenter: parent.verticalCenter
         leftPadding: 5
-        Text {
-            text: Utils.format_timestamp(created_at)
-            color: list.isCurrentItem ? "black" : "red"
+        Row {
+            spacing: 60
+            Text {
+                text: Utils.format_timestamp(created_at)
+                color: list.isCurrentItem ? "black" : "red"
+            }
+            Text {
+                text: Utils.time_delta_formatted(created_at)
+            }
         }
         Text {
             text: "[ " + event + " @ " + head_branch + " ]"
