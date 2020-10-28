@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import json
 import sys
 
 from .path import path
 from .pyside2 import *
 from .rest import Rest
 from .uifactory import UiFactory
+from . import webhooklistener
+from .worker import WorkerThread
 
 
 def main():
@@ -45,8 +48,9 @@ def main():
     #                                 )
 
 
-    # if not engine.rootObjects():
-    #     sys.exit(-1)
+    listener = webhooklistener.run()
+    listener.dataReady.connect(lambda: print("### IPC data:", listener.read()))
+
     sys.exit(app.exec_())
 
 
