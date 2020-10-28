@@ -82,7 +82,7 @@ class WorkflowRuns(QObject):
         api_url = WorkflowRuns.api_new_run.format(workflow_id=w_id)
         payload = {'ref': ref}
         self.call_api("POST", api_url, json=payload)
-        QTimer.singleShot(4000, self.update_runs)
+        self.updating = False
 
     # properties
     # =====

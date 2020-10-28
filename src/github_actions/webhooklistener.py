@@ -37,7 +37,7 @@ class PostHTTPRequestHandler(BaseHTTPRequestHandler):
         body = json.loads(body)
 
         if self.pipe is not None:
-            self.pipe.send(body['action'])
+            self.pipe.send((body['action'], body['check_run']['status'], body['check_run']['conclusion']))
         else:
             check_run = body['check_run']
             print("-----------------------------------------")

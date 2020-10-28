@@ -50,6 +50,7 @@ def main():
 
     listener = webhooklistener.run()
     listener.dataReady.connect(lambda: print("### IPC data:", listener.read()))
+    listener.dataReady.connect(lambda: QTimer.singleShot(3000, rest.m_workflowruns.update_runs))
 
     sys.exit(app.exec_())
 
