@@ -55,9 +55,8 @@ class IPC(QObject):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.parent_conn, self.child_conn = Pipe()
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(lambda: self.parent_conn.poll() and self.dataReady.emit())
-        self.timer.start(100)
+        self.notifier = QSocketNotifier(self.parent_conn.fileno(), QSocketNotifier.Read, self)
+        self.notifier.activated.connect(lambda: self.parent_conn.poll() and self.dataReady.emit())
 
     dataReady = PS2Signal()
 

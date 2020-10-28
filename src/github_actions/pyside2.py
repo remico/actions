@@ -11,6 +11,7 @@ from PySide2.QtCore import Qt
 from PySide2.QtCore import QTimer
 from PySide2.QtCore import QSettings
 from PySide2.QtCore import QMetaObject
+from PySide2.QtCore import QSocketNotifier
 
 from PySide2.QtGui import QIcon
 from PySide2.QtGui import QGuiApplication
