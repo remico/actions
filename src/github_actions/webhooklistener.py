@@ -52,11 +52,16 @@ class PostHTTPRequestHandler(BaseHTTPRequestHandler):
 
 class IPC(QObject):
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, handler, parent=None) -> None:
         super().__init__(parent)
         self.parent_conn, self.child_conn = Pipe()
+
         self.notifier = QSocketNotifier(self.parent_conn.fileno(), QSocketNotifier.Read, self)
         self.notifier.activated.connect(lambda: self.parent_conn.poll() and self.dataReady.emit())
+
+        self.p = Process(target=handler, args=(self.child_conn,))
+        qApp.aboutToQuit.connect(self.p.kill)  # terminate children processes before exit
+        self.p.start()
 
     dataReady = PS2Signal()
 
@@ -97,10 +102,6 @@ onExit(_cleaner)
 
 
 # main entry point if used in a python app
-# note: to terminate, kill() must be explicitly called for the process returned by this function
 def run():
-    ipc = IPC()
-    p = Process(target=listen_to_webhooks, args=(ipc.child_conn,))
-    qApp.aboutToQuit.connect(p.kill)  # terminate children processes before exit
-    p.start()
+    ipc = IPC(listen_to_webhooks)
     return ipc
