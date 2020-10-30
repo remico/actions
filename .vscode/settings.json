@@ -1,5 +1,5 @@
 {
     "python.languageServer": "Pylance",
     "python.linting.pylintEnabled": true,
-    "python.pythonPath": "/usr/bin/python3.8"
+    "python.pythonPath": "venv/bin/python"
 }

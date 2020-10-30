@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import json
 import sys
 
 from .path import path
@@ -9,7 +8,6 @@ from .pyside2 import *
 from .rest import Rest
 from .uifactory import UiFactory
 from . import webhooklistener
-from .worker import WorkerThread
 
 
 def main():
@@ -18,8 +16,8 @@ def main():
     app_icon = path("assets/icon.svg")
     app.setWindowIcon(QIcon(app_icon))
 
-    settings_file = path("config.ini")
-
+    settings_file = path.home().join(".actions_gui.conf")
+    print(settings_file)
     settings = QSettings(settings_file, QSettings.IniFormat)
     (repo_owner := settings.value("owner")) or settings.setValue("owner", "")
     (repo_name := settings.value("repo")) or settings.setValue("repo", "")

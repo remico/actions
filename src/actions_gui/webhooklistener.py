@@ -84,14 +84,14 @@ class HTTPServerProcess(QObject):
 
 
 def listen_to_webhooks(pipe=None):
-    settings = QSettings(path("config.ini"), QSettings.IniFormat)
+    settings = QSettings(path.home().join(".actions_gui.conf"), QSettings.IniFormat)
     settings.beginGroup("webhooks")
     (domain := settings.value("domain")) or settings.setValue("domain", "")
     (local_port := settings.value("local_port")) or settings.setValue("local_port", "")
     settings.endGroup()
 
     if not domain or not local_port:
-        print("@ ERROR: Fill config.ini before running the application")
+        print("@ ERROR: Bad domain name or port. Adjust config before running the application.")
         print("@ Stop http server process.")
         sys.exit(1)
 
