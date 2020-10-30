@@ -50,14 +50,14 @@ class PostHTTPRequestHandler(BaseHTTPRequestHandler):
             print("-----------------------------------------")
 
 
-class IPC(QObject):
+class HTTPServerProcess(QObject):
 
     def __init__(self, handler, parent=None) -> None:
         super().__init__(parent)
         self.parent_conn, self.child_conn = Pipe()
 
         self.notifier = QSocketNotifier(self.parent_conn.fileno(), QSocketNotifier.Read, self)
-        self.notifier.activated.connect(lambda: self.parent_conn.poll() and self.dataReady.emit())
+        self.notifier.activated.connect(self.dataReady)
 
         self.p = Process(target=handler, args=(self.child_conn,))
         qApp.aboutToQuit.connect(self.p.kill)  # terminate children processes before exit
@@ -78,13 +78,19 @@ def listen_to_webhooks(pipe=None):
 
     if not domain or not local_port:
         print("@ ERROR: Fill config.ini before running the application")
+        print("@ Stop http server process.")
         sys.exit(1)
 
     local_port = int(local_port)
 
     # expose local webhook listener to the internet
-    port_forwarder = shlex.split(f"lt -s {domain} -p {local_port}")  # https://<domain>.loca.lt
-    subprocess.Popen(port_forwarder)
+    try:
+        port_forwarder = shlex.split(f"lt -s {domain} -p {local_port}")  # https://<domain>.loca.lt
+        subprocess.Popen(port_forwarder)
+    except OSError as e:
+        print("@ ERROR in the child http server process:", e)
+        print("@ Stop http server process.")
+        sys.exit(2)
 
     # run web server
     httpd = HTTPServer(('localhost', local_port), partial(PostHTTPRequestHandler, pipe))
@@ -103,5 +109,5 @@ onExit(_cleaner)
 
 # main entry point if used in a python app
 def run():
-    ipc = IPC(listen_to_webhooks)
+    ipc = HTTPServerProcess(listen_to_webhooks)
     return ipc
