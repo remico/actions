@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import hmac
 import json
 import shlex
 import subprocess
@@ -10,7 +11,7 @@ from functools import partial
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from io import BytesIO
 from multiprocessing import Process, Pipe
-from os import getpgid, getpid
+from os import getpgid, getpid, getenv
 
 from .path import path
 from .pyside2 import *
@@ -25,8 +26,21 @@ class PostHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         body = self.rfile.read(content_length)
-        self.send_response(200)
-        self.end_headers()
+
+        # validate sender
+        token = getenv('GITHUB_WEBHOOKS_TOKEN').encode()
+        expected_signature = "sha256=" + hmac.new(token, msg=body, digestmod="sha256").hexdigest()
+        received_signature = self.headers['X-Hub-Signature-256']
+        is_valid = hmac.compare_digest(received_signature, expected_signature)
+
+        if is_valid:
+            self.send_response(200)
+            self.end_headers()
+        else:
+            self.send_response(500, "Signatures didn't match!")
+            self.end_headers()
+            print(f"@ WARNING: mismatch signatures in the received webhook: got '{received_signature}', expected '{expected_signature}'")
+            return
 
         # response = BytesIO()
         # response.write(b'This is POST request. ')
