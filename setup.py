@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import platform
-import setuptools
 from pathlib import Path
+
+import setuptools
 
 
 sources_dir = 'src'
 
 if 'linux' not in platform.system().lower():
-    raise Exception('The package requires GNU Linux. Aborting installation...')
+    raise OSError('The package requires GNU Linux. Aborting installation...')
 
 
 def version():

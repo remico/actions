@@ -1,5 +1,13 @@
 {
     "python.languageServer": "Pylance",
     "python.linting.pylintEnabled": true,
-    "python.pythonPath": "venv/bin/python"
+    "python.pythonPath": "venv/bin/python",
+    "psi-header.config": {
+        // "license": "LGPL-3.0-or-later",
+        // "license": "LGPL-3.0+",
+        "license": "MIT",
+    },
+    "psi-header.variables": [
+        ["projectname", "github actions gui"],
+    ],
 }
