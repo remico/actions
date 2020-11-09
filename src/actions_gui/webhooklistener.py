@@ -26,6 +26,7 @@ from os import getpgid, getpid, getenv
 
 from .path import path
 from .pyside2 import *
+from .worker import WorkerThread
 
 
 class PostHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -85,7 +86,15 @@ class HTTPServerProcess(QObject):
         self.notifier.activated.connect(self.dataReady)
 
         self.p = Process(target=handler, args=(self.child_conn,))
-        qApp.aboutToQuit.connect(self.p.kill)  # terminate children processes before exit
+
+        def _on_quit():
+            print("> REQUESTING HTTPD SHUTDOWN...")
+            self.parent_conn.send("http_server_shutdown")
+            # block current process until the child process ends correctly, then close the child
+            self.p.join()
+            self.p.close()
+
+        qApp.aboutToQuit.connect(_on_quit)  # terminate children processes before app exit
         self.p.start()
 
     dataReady = PS2Signal()
@@ -111,25 +120,29 @@ def listen_to_webhooks(pipe=None):
     # expose local webhook listener to the internet
     try:
         port_forwarder = shlex.split(f"lt -s {domain} -p {local_port}")  # https://<domain>.loca.lt
-        subprocess.Popen(port_forwarder)
+        p = subprocess.Popen(port_forwarder)
     except OSError as e:
         print("@ ERROR in the child http server process:", e)
         print("@ Stop http server process.")
         sys.exit(2)
 
-    # run web server
+    # create a web server
     httpd = HTTPServer(('localhost', local_port), partial(PostHTTPRequestHandler, pipe))
-    httpd.serve_forever()
 
+    # and run it in a separate python thread
+    WorkerThread(httpd.serve_forever)
 
-# kill all spawned processes by PGID on app exit
-def _cleaner():
-    pid = getpid()
-    pgid = getpgid(pid)
-    print("@@ kill process group:", pgid)
-    cmd_kill = shlex.split(f"kill -- -{pgid}")
-    subprocess.check_call(cmd_kill)
-onExit(_cleaner)
+    # block current thread just waiting for the HTTPD SHUTDOWN request
+    # from another side of the pipe (i.e. another python process)
+    # NOTE: despite pipe's recv() and send() operations perform in different threads,
+    # no sync is done however, because these operations don't conflict each other
+    # (one thread only sends and another one only receives)
+    if pipe.recv() == "http_server_shutdown":
+        print("> HTTPD SHUTTING DOWN...")
+        p.kill()
+        p.wait()
+        httpd.shutdown()
+        print("> DONE")
 
 
 # main entry point if used in a python app
