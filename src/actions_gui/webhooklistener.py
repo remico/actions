@@ -147,5 +147,5 @@ def listen_to_webhooks(pipe=None):
 
 # main entry point if used in a python app
 def run():
-    ipc = HTTPServerProcess(listen_to_webhooks)
-    return ipc
+    http_server = HTTPServerProcess(listen_to_webhooks)
+    return http_server
