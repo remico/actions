@@ -117,19 +117,24 @@ def listen_to_webhooks(pipe=None):
 
     local_port = int(local_port)
 
+    try:
+        # create a web server
+        httpd = HTTPServer(('localhost', local_port), partial(PostHTTPRequestHandler, pipe))
+    except OSError as e:
+        print("@ ERROR in the webhook listener process:", e)
+        print("@ webhook listener process interrupted.")
+        sys.exit(3)
+
     # expose local webhook listener to the internet
     try:
         port_forwarder = shlex.split(f"lt -s {domain} -p {local_port}")  # https://<domain>.loca.lt
         p = subprocess.Popen(port_forwarder)
     except OSError as e:
-        print("@ ERROR in the child http server process:", e)
-        print("@ Stop http server process.")
+        print("@ ERROR in the webhook listener process:", e)
+        print("@ webhook listener process interrupted.")
         sys.exit(2)
 
-    # create a web server
-    httpd = HTTPServer(('localhost', local_port), partial(PostHTTPRequestHandler, pipe))
-
-    # and run it in a separate python thread
+    # run the web server in a separate python thread
     WorkerThread(httpd.serve_forever)
 
     # block current thread just waiting for the HTTPD SHUTDOWN request
