@@ -12,7 +12,6 @@
 #
 #  Copyright (c) 2020 remico
 
-from os import getenv
 from pathlib import Path
 
 __all__ = ['path']
@@ -32,4 +31,4 @@ class path(str):
 
     @staticmethod
     def home():
-        return path(getenv('HOME'))
+        return path(Path.home())
