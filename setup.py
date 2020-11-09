@@ -91,6 +91,7 @@ setuptools.setup(
     install_requires=[
         # 'PySide2',
         # 'requests',
+        # 'json2xml',
     ],
     license='MIT',
     platforms=['POSIX'],
