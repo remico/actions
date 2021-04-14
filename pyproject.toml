@@ -1,0 +1,37 @@
+[tool.briefcase]
+project_name = "github actions gui"
+bundle = "io.github.remico"
+version = "2020.11.7.dev2150"
+url = "https://remico.github.io/actions"
+license = "MIT license"
+author = 'Roman Gladyshev'
+author_email = "remicollab@gmail.com"
+
+[tool.briefcase.app.githubactionsgui]
+formal_name = "github-actions-gui"  # no spaces for now if using PySide
+description = "let's just explore github's Actions and REST API"
+icon = "src/githubactionsgui/assets/icon.svg"
+sources = ['src/githubactionsgui']
+requires = [
+    'pyside2',
+    'requests',
+    'json2xml',
+]
+
+
+[tool.briefcase.app.githubactionsgui.macOS]
+requires = []
+
+[tool.briefcase.app.githubactionsgui.linux]
+requires = []
+system_requires = []
+
+[tool.briefcase.app.githubactionsgui.windows]
+requires = []
+
+# Mobile deployments
+[tool.briefcase.app.githubactionsgui.iOS]
+requires = []
+
+[tool.briefcase.app.githubactionsgui.android]
+requires = []

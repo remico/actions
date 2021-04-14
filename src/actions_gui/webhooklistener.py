@@ -40,7 +40,7 @@ class PostHTTPRequestHandler(BaseHTTPRequestHandler):
         body = self.rfile.read(content_length)
 
         # validate sender
-        token = getenv('GITHUB_WEBHOOKS_TOKEN').encode()
+        token = getenv('GITHUB_TOKEN_WEBHOOKS').encode()
         expected_signature = "sha256=" + hmac.new(token, msg=body, digestmod="sha256").hexdigest()
         received_signature = self.headers['X-Hub-Signature-256']
         is_valid = hmac.compare_digest(received_signature, expected_signature)
@@ -137,7 +137,7 @@ def listen_to_webhooks(pipe=None):
     # run the web server in a separate python thread
     WorkerThread(httpd.serve_forever)
 
-    # block current thread just waiting for the HTTPD SHUTDOWN request
+    # block current thread, just waiting for the HTTPD SHUTDOWN request
     # from another side of the pipe (i.e. another python process)
     # NOTE: despite pipe's recv() and send() operations perform in different threads,
     # no sync is done however, because these operations don't conflict each other
