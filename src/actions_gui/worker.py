@@ -13,7 +13,7 @@
 #  Copyright (c) 2020 remico
 
 from threading import Thread
-from .pyside2 import *
+from .pyside6 import *
 
 __all__ = ['WorkerThread']
 
@@ -30,8 +30,8 @@ class WorkerThread(QObject):
         self.delay = delay_ms
         self._done.connect(callback)
 
-    _done = PS2Signal()
+    _done = PS6Signal()
 
-    @PS2Slot()
+    @PS6Slot()
     def _on_done(self):
         QTimer.singleShot(self.delay, lambda: self._done.emit() and self.deleteLater())

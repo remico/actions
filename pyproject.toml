@@ -13,7 +13,7 @@ description = "let's just explore github's Actions and REST API"
 icon = "src/githubactionsgui/assets/icon.svg"
 sources = ['src/githubactionsgui']
 requires = [
-    'pyside2',
+    'pyside6',
     'requests',
     'json2xml',
 ]

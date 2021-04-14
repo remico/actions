@@ -12,7 +12,7 @@
 #
 #  Copyright (c) 2020 remico
 
-from .pyside2 import *
+from .pyside6 import *
 
 
 class UiFactory:

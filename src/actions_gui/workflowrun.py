@@ -19,7 +19,7 @@ from tempfile import gettempdir
 from json2xml.json2xml import Json2xml
 from json2xml.utils import readfromstring
 
-from .pyside2 import *
+from .pyside6 import *
 from .worker import WorkerThread
 
 
@@ -63,19 +63,19 @@ class WorkflowRuns(QObject):
         return self.call_api("GET", WorkflowRuns.api_list)
 
     # signals
-    request_action = PS2Signal(str, str)
+    request_action = PS6Signal(str, str)
 
     # slots
-    @PS2Slot()
+    @PS6Slot()
     def update_runs(self):
         self.updating = True
         self.xml = self._get_runs()
 
-    @PS2Slot()
+    @PS6Slot()
     def clear_runs(self):
         self.xml = ""
 
-    @PS2Slot(list)
+    @PS6Slot(list)
     def delete_runs(self, items):
         # run in a different thread just to avoid blocking gui
         if items:
@@ -87,7 +87,7 @@ class WorkflowRuns(QObject):
 
             WorkerThread(_job, self).callback(self.update_runs, 1000)
 
-    @PS2Slot(str, str)
+    @PS6Slot(str, str)
     def post_workflow_dispatch(self, ref, w_id):
         self.updating = True
         api_url = WorkflowRuns.api_new_run.format(workflow_id=w_id)
@@ -97,10 +97,10 @@ class WorkflowRuns(QObject):
 
     # properties
     # =====
-    xmlAboutToUpdate = PS2Signal()
-    xmlChanged = PS2Signal()
+    xmlAboutToUpdate = PS6Signal()
+    xmlChanged = PS6Signal()
 
-    @PS2Property(str, notify=xmlChanged)
+    @PS6Property(str, notify=xmlChanged)
     def xml(self):
         return self.m_data
 
@@ -112,9 +112,9 @@ class WorkflowRuns(QObject):
             self.updating = False
 
     # =====
-    updatingChanged = PS2Signal()
+    updatingChanged = PS6Signal()
 
-    @PS2Property(bool, notify=updatingChanged)
+    @PS6Property(bool, notify=updatingChanged)
     def updating(self):
         return self.m_updating
 

@@ -25,7 +25,7 @@ from multiprocessing import Process, Pipe
 from os import getpgid, getpid, getenv
 
 from .path import path
-from .pyside2 import *
+from .pyside6 import *
 from .worker import WorkerThread
 
 
@@ -97,7 +97,7 @@ class HTTPServerProcess(QObject):
         qApp.aboutToQuit.connect(_on_quit)  # terminate children processes before app exit
         self.p.start()
 
-    dataReady = PS2Signal()
+    dataReady = PS6Signal()
 
     def read(self):
         return self.parent_conn.recv() if self.parent_conn.poll() else None

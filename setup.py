@@ -89,7 +89,7 @@ setuptools.setup(
     ],
     python_requires='>=3.8',
     install_requires=[
-        # 'PySide2',
+        # 'pyside6',
         # 'requests',
         # 'json2xml',
     ],

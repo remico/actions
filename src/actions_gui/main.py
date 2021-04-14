@@ -15,7 +15,7 @@
 import sys
 
 from .path import path
-from .pyside2 import *
+from .pyside6 import *
 from .rest import Rest
 from .uifactory import UiFactory
 from . import webhooklistener
