@@ -39,10 +39,10 @@ class Rest(QObject):
 
         self.m_workflowruns = WorkflowRuns(self)
 
-    def do_request(self, action: str, api_url: str, **kw):
+    def do_request(self, http_method: str, api_url: str, **kw):
         try:
             url = f"https://api.github.com/repos/{self.owner}/{self.repo}/{api_url}"
-            print(f"* API: {action.upper()} @ {url}")
+            print(f"* API: {http_method.upper()} @ {url}")
 
             if 'auth' not in kw:
                 kw['auth'] = self.auth
@@ -50,9 +50,9 @@ class Rest(QObject):
             if headers := kw.get('headers', {}):
                 headers['Accept'] = "application/vnd.github.v3+json"
 
-            if action.lower() == 'delete':
+            if http_method.lower() == 'delete':
                 r = self.s.delete(url, **kw)
-            elif action.lower() == 'post':
+            elif http_method.lower() == 'post':
                 print(f"* payload json: {kw.get('json')}")
                 r = self.s.post(url, **kw)
             else:  # GET by default
@@ -67,10 +67,14 @@ class Rest(QObject):
             sys.exit(1)
 
     # properties
-    @uiobject(WorkflowRuns)
-    def UiWorkflowRuns(self):
+    # @uiobject(WorkflowRuns)
+    def _UiWorkflowRuns(self):
         return self.m_workflowruns
 
-    @PS6Property(str, constant=True)
-    def REPO(self):
+    UiWorkflowRuns = PS6Property(WorkflowRuns, _UiWorkflowRuns, constant=True)
+
+    # @PS6Property(str, constant=True)
+    def _REPO(self):
         return self.repo
+
+    REPO = PS6Property(str, _REPO, constant=True)

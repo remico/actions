@@ -100,27 +100,31 @@ class WorkflowRuns(QObject):
     xmlAboutToUpdate = PS6Signal()
     xmlChanged = PS6Signal()
 
-    @PS6Property(str, notify=xmlChanged)
-    def xml(self):
+    # @PS6Property(str, notify=xmlChanged)
+    def _xml(self):
         return self.m_data
 
-    @xml.setter
+    # @xml.setter
     def setXml(self, xml):
         self.m_data = xml
         self.xmlChanged.emit()
         if xml:
             self.updating = False
 
+    xml = PS6Property(str, _xml, setXml, notify=xmlChanged)
+
     # =====
     updatingChanged = PS6Signal()
 
-    @PS6Property(bool, notify=updatingChanged)
-    def updating(self):
+    # @PS6Property(bool, notify=updatingChanged)
+    def _updating(self):
         return self.m_updating
 
-    @updating.setter
+    # @updating.setter
     def setUpdating(self, val):
         if val:
             self.xmlAboutToUpdate.emit()
         self.m_updating = bool(val)
         self.updatingChanged.emit()
+
+    updating = PS6Property(bool, _updating, setUpdating, notify=updatingChanged)
