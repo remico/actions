@@ -13,7 +13,7 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
-import ui 1.0
+import remico.ui 1.0
 
 ApplicationWindow {
     id: root

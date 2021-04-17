@@ -37,12 +37,12 @@ def main():
     rest = Rest(repo_name, repo_owner)
     uifactory = UiFactory(engine)
 
-    engine.addImportPath(path())  # NOTE: imports from the package root so far
+    engine.addImportPath(path("qml"))
 
     engine.rootContext().setContextObject(rest)
     engine.rootContext().setContextProperty("APP_CONFIG", settings_file)
 
-    main_ui = uifactory.make_window(path("ui/ApplicationWindow.qml"))
+    main_ui = uifactory.make_window(path("qml/remico/ui/ApplicationWindow.qml"))
 
     # test_ui = uifactory.make_window(path("ui/draft/TestWindow.qml"), main_ui)
     # test_ui.show()  # window
@@ -61,6 +61,7 @@ def main():
     listener.dataReady.connect(lambda: print("### IPC data:", listener.read()))
     listener.dataReady.connect(lambda: QTimer.singleShot(3000, rest.m_workflowruns.update_runs))
 
+    engine.quit.connect(app.quit)  # to quit by a QML-registered hotkey
     sys.exit(app.exec_())
 
 

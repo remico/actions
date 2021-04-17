@@ -13,8 +13,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 // import QtQml.XmlListModel
-// import QtQuick.XmlListModel 2.15
-import ui 1.0
+import remico.ui 1.0
 
 Item {
     id: root
