@@ -54,8 +54,8 @@ class WorkflowRuns(QObject):
         QTimer.singleShot(200, self.update_runs)
 
     # methods
-    def call_api(self, action, url, **kw):
-        return self.parent().do_request(action, url, **kw)
+    def call_api(self, http_method, url, **kw):
+        return self.parent().do_request(http_method, url, **kw)
 
     @json2xml
     # @localdata

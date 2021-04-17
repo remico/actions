@@ -31,6 +31,7 @@ from PySide6.QtQml import QQmlComponent
 from PySide6.QtQml import QQmlEngine
 from PySide6.QtQml import QQmlContext
 from PySide6.QtQml import QQmlProperty
+from PySide6.QtQml import qmlRegisterType
 
 from PySide6.QtQuick import QQuickItem
 from PySide6.QtQuick import QQuickView
