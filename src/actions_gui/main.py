@@ -19,6 +19,7 @@ from .pyside6 import *
 from .rest import Rest
 from .uifactory import UiFactory
 from . import webhooklistener
+from .actionsxmlmodel import register_xml_model
 
 
 def main():
@@ -41,6 +42,8 @@ def main():
 
     engine.rootContext().setContextObject(rest)
     engine.rootContext().setContextProperty("APP_CONFIG", settings_file)
+
+    register_xml_model()
 
     main_ui = uifactory.make_window(path("qml/remico/ui/ApplicationWindow.qml"))
 

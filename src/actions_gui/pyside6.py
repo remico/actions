@@ -22,6 +22,10 @@ from PySide6.QtCore import QTimer
 from PySide6.QtCore import QSettings
 from PySide6.QtCore import QMetaObject
 from PySide6.QtCore import QSocketNotifier
+from PySide6.QtCore import QByteArray
+
+from PySide6.QtCore import QAbstractListModel
+from PySide6.QtCore import QModelIndex
 
 from PySide6.QtGui import QIcon
 from PySide6.QtGui import QGuiApplication

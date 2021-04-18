@@ -10,10 +10,11 @@
  *
  * Copyright (c) 2020 remico
  */
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-// import QtQml.XmlListModel
+import QtQuick
+import QtQuick.Controls
+
 import remico.ui 1.0
+import remico.models 1.0
 
 Item {
     id: root
@@ -49,17 +50,9 @@ Item {
             onChecked: Utils.a_insert2(root.toDelete, run_id, checked)
         }
 
-        // model: XmlListModel {
-        //     xml: UiWorkflowRuns.xml
-        //     query: "/all/workflow_runs/item"
-        //     XmlRole { name: 'run_id'; query: 'id/string()' }
-        //     XmlRole { name: 'created_at'; query: 'created_at/string()' }
-        //     XmlRole { name: 'conclusion'; query: 'conclusion/string()' }
-        //     XmlRole { name: 'event'; query: 'event/string()' }
-        //     XmlRole { name: 'head_branch'; query: 'head_branch/string()' }
-        //     XmlRole { name: 'status'; query: 'status/string()' }
-        //     XmlRole { name: 'weblink'; query: 'html_url/string()' }
-        // }
+        model: ActionsXmlModel {
+            xml: UiWorkflowRuns.xml
+        }
 
         BusyIndicator {
             anchors.centerIn: parent
