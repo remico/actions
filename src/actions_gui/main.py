@@ -28,7 +28,7 @@ def main():
     app.setWindowIcon(QIcon(app_icon))
 
     settings_file = path.home().join(".actions_gui.conf")
-    print(settings_file)
+    print("Settings:", settings_file)
     settings = QSettings(settings_file, QSettings.IniFormat)
     (repo_owner := settings.value("owner")) or settings.setValue("owner", "")
     (repo_name := settings.value("repo")) or settings.setValue("repo", "")
