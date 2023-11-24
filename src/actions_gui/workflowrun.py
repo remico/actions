@@ -66,6 +66,11 @@ class WorkflowRuns(QObject):
     request_action = PS6Signal(str, str)
 
     # slots
+
+    # # GET
+    # headers['Accept'] = "application/vnd.github.v3+json"
+    # workflow_id = "python-publish.yml"
+    # https://api.github.com/repos/{owner}/{repo}/ + "actions/runs"
     @PS6Slot()
     def update_runs(self):
         self.updating = True
@@ -75,6 +80,10 @@ class WorkflowRuns(QObject):
     def clear_runs(self):
         self.xml = ""
 
+    # DELETE
+    # headers['Accept'] = "application/vnd.github.v3+json"
+    # workflow_id = "python-publish.yml"
+    # https://api.github.com/repos/{owner}/{repo}/ + "actions/runs/{run_id}"
     @PS6Slot(list)
     def delete_runs(self, items):
         # run in a different thread just to avoid blocking gui
@@ -87,6 +96,11 @@ class WorkflowRuns(QObject):
 
             WorkerThread(_job, self).callback(self.update_runs, 1000)
 
+    # POST
+    # headers['Accept'] = "application/vnd.github.v3+json"
+    # workflow_id = "python-publish.yml"
+    # https://api.github.com/repos/{owner}/{repo}/ + actions/workflows/{workflow_id}/dispatches
+    # json: { 'ref' : 'develop' } # ref - branch or tag
     @PS6Slot(str, str)
     def post_workflow_dispatch(self, ref, w_id):
         self.updating = True
